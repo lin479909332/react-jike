@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { message } from 'antd'
 
 const request = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0',
@@ -25,7 +26,8 @@ request.interceptors.response.use(
   (error) => {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
-    return Promise.reject(error)
+    message.error('请求超时', error)
+    // return Promise.reject(error)
   },
 )
 
