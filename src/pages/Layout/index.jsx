@@ -1,34 +1,36 @@
 import { Layout, Menu, Popconfirm } from 'antd'
-import {
-  HomeOutlined,
-  DiffOutlined,
-  EditOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons'
+import { HomeOutlined, DiffOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons'
 import './index.scss'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 const { Header, Sider } = Layout
 
 const items = [
   {
     label: '首页',
-    key: '1',
+    key: '/',
     icon: <HomeOutlined />,
   },
   {
     label: '文章管理',
-    key: '2',
+    key: '/publish',
     icon: <DiffOutlined />,
   },
   {
     label: '创建文章',
-    key: '3',
+    key: '/article',
     icon: <EditOutlined />,
   },
 ]
 
 const GeekLayout = () => {
+  const navigate = useNavigate()
+  // 左侧菜单被点击的事件
+  const onMenuClick = (route) => {
+    // 获取菜单路由并跳转
+    const path = route.key
+    navigate(path)
+  }
   return (
     <Layout>
       <Header className="header">
@@ -49,11 +51,13 @@ const GeekLayout = () => {
             theme="dark"
             defaultSelectedKeys={['1']}
             items={items}
-            style={{ height: '100%', borderRight: 0 }}></Menu>
+            onClick={onMenuClick}
+            style={{ height: '100%', borderRight: 0 }}
+          ></Menu>
         </Sider>
         <Layout className="layout-content" style={{ padding: 20 }}>
           {/* 二级路由出口 */}
-          <Outlet/>
+          <Outlet />
         </Layout>
       </Layout>
     </Layout>
