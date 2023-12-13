@@ -4,11 +4,12 @@ import { createSlice } from '@reduxjs/toolkit'
 const userStore = createSlice({
   name: 'user',
   initialState: {
-    token: '',
+    token: localStorage.getItem('token_key') || '',
   },
   reducers: {
     setToken(state, action) {
       state.token = action.payload
+      localStorage.setItem('token_key', action.payload)
     },
   },
 })
@@ -19,7 +20,7 @@ const { setToken } = userStore.actions
 const fetchLogin = (loginForm) => {
   return async (dispatch) => {
     const res = await request.post('/authorizations', loginForm)
-    if(res.message === 'OK'){
+    if (res.message === 'OK') {
       dispatch(setToken(res.data.token))
     }
   }
