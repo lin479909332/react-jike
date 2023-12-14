@@ -1,4 +1,4 @@
-import { request, getToken, saveToken } from '@/utils'
+import { request, getToken, saveToken, removeToken } from '@/utils'
 import { createSlice } from '@reduxjs/toolkit'
 
 const userStore = createSlice({
@@ -16,10 +16,15 @@ const userStore = createSlice({
     setUserInfo(state, action) {
       state.userInfo = action.payload
     },
+    clearUserInfo(state) {
+      state.userInfo = {}
+      state.token = ''
+      removeToken()
+    },
   },
 })
 
-const { setToken, setUserInfo } = userStore.actions
+const { setToken, setUserInfo, clearUserInfo } = userStore.actions
 
 // 请求登录的异步方法
 const fetchLogin = (loginForm) => {
@@ -43,6 +48,6 @@ const fetchUserInfo = () => {
 
 const userReducer = userStore.reducer
 
-export { setToken, fetchLogin, fetchUserInfo }
+export { fetchLogin, fetchUserInfo, clearUserInfo }
 
 export default userReducer
