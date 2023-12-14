@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { getToken } from '@/utils'
+import { getToken, removeToken } from '@/utils'
+import router from '@/router'
 const request = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0',
   timeout: 5000,
@@ -29,6 +30,13 @@ request.interceptors.response.use(
   (error) => {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    // 处理token失效 401的状态
+    if(error.response.status === 401){
+      removeToken()
+      router.navigate('/login').then(()=>{
+        window.location.reload()
+      })
+    }
     alert('请求超时，请前往控制台查看错误')
     console.log(error)
     // return Promise.reject(error)
