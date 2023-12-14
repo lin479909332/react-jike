@@ -5,16 +5,21 @@ const userStore = createSlice({
   name: 'user',
   initialState: {
     token: getToken() || '',
+    // 用户信息
+    userInfo: {},
   },
   reducers: {
     setToken(state, action) {
       state.token = action.payload
       saveToken(action.payload)
     },
+    setUserInfo(state, action) {
+      state.userInfo = action.payload
+    },
   },
 })
 
-const { setToken } = userStore.actions
+const { setToken, setUserInfo } = userStore.actions
 
 // 请求登录的异步方法
 const fetchLogin = (loginForm) => {
@@ -26,8 +31,18 @@ const fetchLogin = (loginForm) => {
   }
 }
 
+// 获取用户信息的异步方法
+const fetchUserInfo = () => {
+  return async (dispatch) => {
+    const res = await request.get('/user/profile')
+    if (res.message === 'OK') {
+      dispatch(setUserInfo(res.data))
+    }
+  }
+}
+
 const userReducer = userStore.reducer
 
-export { setToken, fetchLogin }
+export { setToken, fetchLogin, fetchUserInfo }
 
 export default userReducer
