@@ -1,10 +1,10 @@
-import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
-import { getChannelListAPI } from '@/apis/article'
+import { getChannelListAPI, createArticleAPI } from '@/apis/article'
 import { useEffect, useState } from 'react'
 
 const { Option } = Select
@@ -22,6 +22,25 @@ const Publish = () => {
       setChannelList(res.data.channels)
     }
   }
+  // 发布文章
+  const onFinish = async (formValue) => {
+    const { title, content, channel_id } = formValue
+    const reqData = {
+      title,
+      content,
+      cover: {
+        type: 0,
+        images: [],
+      },
+      channel_id,
+    }
+    const res = await createArticleAPI(reqData)
+    if (res.message === 'OK') {
+      message.success('发布成功')
+    } else {
+      message.error('发布失败')
+    }
+  }
   return (
     <div className="publish">
       <Card
@@ -29,7 +48,12 @@ const Publish = () => {
           <Breadcrumb items={[{ title: <Link to={'/'}>首页</Link> }, { title: '发布文章' }]} />
         }
       >
-        <Form labelCol={{ span: 4 }} wrapperCol={{ span: 16 }} initialValues={{ type: 1 }}>
+        <Form
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          initialValues={{ type: 1 }}
+          onFinish={onFinish}
+        >
           <Form.Item
             label="标题"
             name="title"
