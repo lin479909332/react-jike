@@ -4,10 +4,24 @@ import { Link } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
+import { getChannelListAPI } from '@/apis/article'
+import { useEffect, useState } from 'react'
 
 const { Option } = Select
 
 const Publish = () => {
+  // 频道列表
+  const [channelList, setChannelList] = useState([])
+  useEffect(() => {
+    getChannelList()
+  }, [])
+  // 获取频道列表的方法
+  const getChannelList = async () => {
+    const res = await getChannelListAPI()
+    if (res.message === 'OK') {
+      setChannelList(res.data.channels)
+    }
+  }
   return (
     <div className="publish">
       <Card
@@ -29,7 +43,11 @@ const Publish = () => {
             rules={[{ required: true, message: '请选择文章频道' }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              <Option value={0}>推荐</Option>
+              {channelList.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item
