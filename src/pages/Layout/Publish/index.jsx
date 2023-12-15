@@ -24,13 +24,15 @@ const Publish = () => {
   }
   // 发布文章
   const onFinish = async (formValue) => {
+    if (imageList.length !== imageType) return message.warning('图片类型和数量不一致')
     const { title, content, channel_id } = formValue
     const reqData = {
       title,
       content,
+      type: imageType,
       cover: {
-        type: 0,
-        images: [],
+        type: imageType,
+        images: imageList.map((item) => item.response.data.url),
       },
       channel_id,
     }
@@ -49,7 +51,7 @@ const Publish = () => {
   // 图片类型切换
   const [imageType, setImageType] = useState(0)
   const onTypeChange = (e) => {
-    setImageType(e.target.value)
+    setImageType(+e.target.value)
   }
   return (
     <div className="publish">
