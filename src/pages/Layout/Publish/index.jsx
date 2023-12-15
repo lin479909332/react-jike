@@ -46,6 +46,11 @@ const Publish = () => {
   const onChange = (value) => {
     setImageList(value.fileList)
   }
+  // 图片类型切换
+  const [imageType, setImageType] = useState(0)
+  const onTypeChange = (e) => {
+    setImageType(e.target.value)
+  }
   return (
     <div className="publish">
       <Card
@@ -56,7 +61,7 @@ const Publish = () => {
         <Form
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ type: 1 }}
+          initialValues={{ type: 0 }}
           onFinish={onFinish}
         >
           <Form.Item
@@ -80,24 +85,26 @@ const Publish = () => {
             </Select>
           </Form.Item>
           <Form.Item label="封面">
-            <Form.Item name="type">
+            <Form.Item name="type" onChange={onTypeChange}>
               <Radio.Group>
                 <Radio value={1}>单图</Radio>
                 <Radio value={3}>三图</Radio>
                 <Radio value={0}>无图</Radio>
               </Radio.Group>
             </Form.Item>
-            <Upload
-              listType="picture-card"
-              showUploadList
-              action={'http://geek.itheima.net/v1_0/upload'}
-              name="image"
-              onChange={onChange}
-            >
-              <div style={{ marginTop: 8 }}>
-                <PlusOutlined />
-              </div>
-            </Upload>
+            {imageType > 0 && (
+              <Upload
+                listType="picture-card"
+                showUploadList
+                action={'http://geek.itheima.net/v1_0/upload'}
+                name="image"
+                onChange={onChange}
+              >
+                <div style={{ marginTop: 8 }}>
+                  <PlusOutlined />
+                </div>
+              </Upload>
+            )}
           </Form.Item>
           <Form.Item
             label="内容"
