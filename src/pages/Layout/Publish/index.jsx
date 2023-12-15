@@ -41,6 +41,11 @@ const Publish = () => {
       message.error('发布失败')
     }
   }
+  // 图片上传的回调
+  const [imageList, setImageList] = useState([])
+  const onChange = (value) => {
+    setImageList(value.fileList)
+  }
   return (
     <div className="publish">
       <Card
@@ -73,6 +78,26 @@ const Publish = () => {
                 </Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item label="封面">
+            <Form.Item name="type">
+              <Radio.Group>
+                <Radio value={1}>单图</Radio>
+                <Radio value={3}>三图</Radio>
+                <Radio value={0}>无图</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Upload
+              listType="picture-card"
+              showUploadList
+              action={'http://geek.itheima.net/v1_0/upload'}
+              name="image"
+              onChange={onChange}
+            >
+              <div style={{ marginTop: 8 }}>
+                <PlusOutlined />
+              </div>
+            </Upload>
           </Form.Item>
           <Form.Item
             label="内容"
