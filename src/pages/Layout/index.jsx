@@ -16,12 +16,12 @@ const items = [
   },
   {
     label: '文章管理',
-    key: '/publish',
+    key: '/article',
     icon: <DiffOutlined />,
   },
   {
     label: '创建文章',
-    key: '/article',
+    key: '/publish',
     icon: <EditOutlined />,
   },
 ]
