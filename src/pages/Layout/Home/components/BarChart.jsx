@@ -23,7 +23,7 @@ const BarChart = ({ title, xAxisData, seriesData }) => {
       ],
     }
     myChart.setOption(option)
-  }, [])
+  }, [title,xAxisData,seriesData])
   return <div ref={chartRef} style={{ width: '400px', height: '300px' }}></div>
 }
 
