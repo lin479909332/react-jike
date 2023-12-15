@@ -1,27 +1,18 @@
+import { useState } from 'react'
 import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
-import { getChannelListAPI, createArticleAPI } from '@/apis/article'
-import { useEffect, useState } from 'react'
+import { createArticleAPI } from '@/apis/article'
+import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
 
 const Publish = () => {
   // 频道列表
-  const [channelList, setChannelList] = useState([])
-  useEffect(() => {
-    getChannelList()
-  }, [])
-  // 获取频道列表的方法
-  const getChannelList = async () => {
-    const res = await getChannelListAPI()
-    if (res.message === 'OK') {
-      setChannelList(res.data.channels)
-    }
-  }
+  const { channelList } = useChannel()
   // 发布文章
   const onFinish = async (formValue) => {
     if (imageList.length !== imageType) return message.warning('图片类型和数量不一致')
