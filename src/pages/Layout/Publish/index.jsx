@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Card, Breadcrumb, Form, Button, Radio, Input, Upload, Space, Select, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
-import { createArticleAPI, getArticleById } from '@/apis/article'
+import { createArticleAPI, getArticleById, updateArticleAPI } from '@/apis/article'
 import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
 
 const Publish = () => {
+  const navigate = useNavigate()
   // 频道列表
   const { channelList } = useChannel()
   // 发布文章
@@ -23,13 +24,26 @@ const Publish = () => {
       type: imageType,
       cover: {
         type: imageType,
-        images: imageList.map((item) => item.response.data.url),
+        images: imageList.map((item) => {
+          if (item.response) {
+            return item.response.data.url
+          } else {
+            return item.url
+          }
+        }),
       },
       channel_id,
     }
-    const res = await createArticleAPI(reqData)
-    if (res.message === 'OK') {
+    let result
+    if (articleId) {
+      result = await updateArticleAPI({ ...reqData, id: articleId })
+    } else {
+      result = await createArticleAPI(reqData)
+    }
+
+    if (result.message === 'OK') {
       message.success('发布成功')
+      navigate('/article')
     } else {
       message.error('发布失败')
     }
