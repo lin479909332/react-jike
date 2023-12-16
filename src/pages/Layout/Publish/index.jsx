@@ -51,7 +51,20 @@ const Publish = () => {
   useEffect(() => {
     const getArticleDetail = async () => {
       const res = await getArticleById(articleId)
-      form.setFieldsValue(res.data)
+      const data = res.data
+      const { cover } = data
+      form.setFieldsValue({
+        ...data,
+        type: cover.type,
+      })
+      // 回填图片列表
+      setImageType(cover.type)
+      // 回填图片
+      setImageList(
+        cover.images.map((url) => {
+          return { url }
+        }),
+      )
     }
     if (articleId) {
       getArticleDetail()
@@ -107,6 +120,7 @@ const Publish = () => {
                 name="image"
                 onChange={onChange}
                 maxCount={imageType}
+                fileList={imageList}
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />
