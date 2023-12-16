@@ -18,20 +18,39 @@ const Article = () => {
   const [list, setList] = useState([])
   // 文章总数
   const [count, setCount] = useState(0)
+  // 筛选区域参数
+  const [reqData, setReqData] = useState({
+    status: '',
+    channel_id: '',
+    begin_pubdate: '',
+    end_pubdate: '',
+    page: 1,
+    per_page: 3,
+  })
   // 获取文章列表
   useEffect(() => {
     const getArticleList = async () => {
-      const res = await getArticleListAPI()
+      const res = await getArticleListAPI(reqData)
       const { results, total_count } = res.data
       setList(results)
       setCount(total_count)
     }
     getArticleList()
-  }, [])
+  }, [reqData])
   // 定义文章审核的状态枚举
   const status = {
     1: <Tag color="warning">待审核</Tag>,
     2: <Tag color="success">审核通过</Tag>,
+  }
+  // 提交form筛选表单
+  const onFinish = (formValue) => {
+    setReqData({
+      ...reqData,
+      channel_id: formValue.channel_id,
+      status: formValue.status,
+      begin_pubdate: formValue.date[0].format('YYYY-MM-DD'),
+      end_pubdate: formValue.date[1].format('YYYY-MM-DD'),
+    })
   }
   const columns = [
     {
@@ -88,7 +107,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: '' }}>
+        <Form initialValues={{ status: '' }} onFinish={onFinish}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={''}>全部</Radio>
@@ -98,7 +117,7 @@ const Article = () => {
           </Form.Item>
 
           <Form.Item label="频道" name="channel_id">
-            <Select placeholder="请选择文章频道" defaultValue={0} style={{ width: 120 }}>
+            <Select placeholder="请选择文章频道" style={{ width: 120 }}>
               {channelList.map((item) => (
                 <Option key={item.id} value={item.id}>
                   {item.name}
