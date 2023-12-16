@@ -52,6 +52,13 @@ const Article = () => {
       end_pubdate: formValue.date[1].format('YYYY-MM-DD'),
     })
   }
+  // 点击分页器页码的回调
+  const onPageChange = (page) => {
+    setReqData({
+      ...reqData,
+      page,
+    })
+  }
   const columns = [
     {
       title: '封面',
@@ -117,7 +124,7 @@ const Article = () => {
           </Form.Item>
 
           <Form.Item label="频道" name="channel_id">
-            <Select placeholder="请选择文章频道" style={{ width: 120 }}>
+            <Select placeholder="请选择文章频道" defaultValue={0} style={{ width: 120 }}>
               {channelList.map((item) => (
                 <Option key={item.id} value={item.id}>
                   {item.name}
@@ -139,7 +146,17 @@ const Article = () => {
         </Form>
       </Card>
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={list} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={list}
+          pagination={{
+            total: count,
+            pageSize: reqData.per_page,
+            onChange: onPageChange,
+            
+          }}
+        />
       </Card>
     </div>
   )
