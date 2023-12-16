@@ -1,12 +1,22 @@
 import { Link } from 'react-router-dom'
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select } from 'antd'
+import {
+  Card,
+  Breadcrumb,
+  Form,
+  Button,
+  Radio,
+  DatePicker,
+  Select,
+  Popconfirm,
+  message,
+} from 'antd'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 import { Table, Tag, Space } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import img404 from '@/assets/error.png'
 import { useChannel } from '@/hooks/useChannel'
 import { useEffect, useState } from 'react'
-import { getArticleListAPI } from '@/apis/article'
+import { getArticleListAPI, deleteArticleAPI } from '@/apis/article'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -59,6 +69,19 @@ const Article = () => {
       page,
     })
   }
+  // 确定删除文章
+  const onDeleteArticleConfirm = async (id) => {
+    console.log(id)
+    const res = await deleteArticleAPI(id)
+    if (res.message === 'OK') {
+      message.success('删除成功')
+      setReqData({
+        ...reqData,
+      })
+    } else {
+      message.error('删除失败')
+    }
+  }
   const columns = [
     {
       title: '封面',
@@ -100,7 +123,17 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button type="primary" danger shape="circle" icon={<DeleteOutlined />} />
+            <Popconfirm
+              title="删除文章"
+              description="确定要删除这篇文章吗"
+              onConfirm={() => {
+                onDeleteArticleConfirm(data.id)
+              }}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button type="primary" danger shape="circle" icon={<DeleteOutlined />} />
+            </Popconfirm>
           </Space>
         )
       },
@@ -154,7 +187,6 @@ const Article = () => {
             total: count,
             pageSize: reqData.per_page,
             onChange: onPageChange,
-            
           }}
         />
       </Card>
